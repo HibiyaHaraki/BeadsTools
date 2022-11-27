@@ -18,6 +18,8 @@ from . import beads_log
 import numpy as np
 import nmslib
 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
 logger = beads_log.root_logger();
 
 ## kNN
@@ -36,9 +38,9 @@ def beads_kNN(Points,Nodes,Num):
     nodes = np.array(Nodes, dtype=np.float32);
 
     # Build Index
-    index = nmslib.init(space='l2');
+    index = nmslib.init(method="hnsw",space='l2');
     index.addDataPointBatch(nodes);
-    index.createIndex({}, print_progress=True)
+    index.createIndex({}, print_progress=True);
 
     # NN-calculation
     resultIDs = []; resultDist = [];

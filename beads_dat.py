@@ -95,13 +95,13 @@ def compare_dat(InfilePath1, InfilePath2, OutfilePath, method):
 
     # Comapare data
     NewData = [];
-    if (method == 1):
+    if (method == "0"):
         for ii in range(NumData1):
             tmp_newdata = [];
             for jj in range(len(Data1[ii])):
                 tmp_newdata.append(Data1[ii][jj]-Data2[ii][jj]);
             NewData.append(tmp_newdata);
-    elif (method == 2):
+    elif (method == "1"):
         for ii in range(NumData1):
             tmp_newdata = [];
             for jj in range(len(Data1[ii])):

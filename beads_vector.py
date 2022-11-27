@@ -58,6 +58,14 @@ def normalize_vector(vector):
 
     return normalize_vector;
 
+## Vector difference
+def vector_diff(vector1,vector2):
+    tmp_vector = [];
+    for ii in range(len(vector1)):
+        tmp_vector.append(vector1[ii]-vector2[ii]);
+    vector_diff = vector_norm(tmp_vector,2);
+    return vector_diff
+
 ## Calculate cross-product
 def cross_product(vector1,vector2):
     # Check Input
@@ -86,11 +94,11 @@ def normal_vector(Nodes):
 
     # Calculate Normal Vector
     vector1 = []; vector2 = [];
-    for ii in rnage(DIM):
+    for ii in range(DIM):
         vector1.append(Nodes[1][ii] - Nodes[0][ii]);
         vector2.append(Nodes[2][ii] - Nodes[0][ii]);
 
-    normal_vector = cross_procuct(vector1,vector2);
+    normal_vector = cross_product(vector1,vector2);
     normal_vector = normalize_vector(normal_vector);
 
     # Output
@@ -118,7 +126,7 @@ def cosine_similarity(vectors1, vectors2):
         logger.error('Sorry, this code can apply to only 3-dimentional Vector');
         sys.exit();
 
-    cosine_similarity = inner_product(normalize_vector(vector1),normalize_vector(vector2));
+    cosine_similarity = inner_product(normalize_vector(vectors1),normalize_vector(vectors2));
 
     # Output
     return cosine_similarity;
@@ -155,6 +163,13 @@ def beads_pca(Nodes):
     covariance_matrix = np.array(covariance_matrix);
     w, v = LA.eig(covariance_matrix);
 
+    w_norm = 0;
+    for ii in range(len(w)):
+        w_norm += w[ii]*w[ii];
+    w_norm = np.sqrt(w_norm);
+    for ii in range(len(w)):
+        w[ii] /= w_norm;
+
     # Output
     return w.tolist(), v.tolist();
 
@@ -178,11 +193,19 @@ def calc_perpendicular_leg(point,Nodes):
     for ii in range(3):
         vector1.append(Nodes[1][ii] - Nodes[0][ii]);
         vector2.append(Nodes[2][ii] - Nodes[0][ii]);
-    cross = cross_procuct(vector1,vector2);
+    cross = cross_product(vector1,vector2);
     const = cross[0]*point[0] + cross[1]*point[1] + cross[2]*point[2];
 
+    if (abs(vector_norm(cross,2)) < 1.00E-09):
+        logger.error("Illegal Input");
+        for ii in range(3):
+            print("Node {0} : ({1} {2} {3})".format(ii,Nodes[ii][0],Nodes[ii][1],Nodes[ii][2]));
+        print("Vector 1 : ({0} {1} {2})".format(vector1[0],vector1[1],vector1[2]));
+        print("Vector 2 : ({0} {1} {2})".format(vector2[0],vector2[1],vector2[2]));
+        print("Norm : {0}".format(vector_norm(cross,2)));
+
     # Calculate Intersection
-    intersetion = [cross[0]*const/vector_norm(cross,2)**2,cross[1]*const/vector_norm(cross,2)**2,cross[2]*const/vector_norm(cross,2)**2];
+    intersection = [cross[0]*const/vector_norm(cross,2)**2,cross[1]*const/vector_norm(cross,2)**2,cross[2]*const/vector_norm(cross,2)**2];
 
     # Unnormalize
     for ii in range(3):
@@ -223,7 +246,10 @@ def judge_inout(point,Nodes):
     inner2 = inner_product(cross1,cross3);
 
     # Judge Sign
-    if (inner1/math.abs(inner1) == inner2/math.abs(inner2)):
+    if (abs(inner1) < 1.0E-09 or abs(inner2) < 1.0E-09):
+        logger.warn("Input is possibly wrong!!");
+        return 1;
+    if (inner1/abs(inner1) == inner2/abs(inner2)):
         return 1;
     else:
         return 0;

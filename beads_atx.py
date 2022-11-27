@@ -98,7 +98,7 @@ def write_NVC_atx(filePath,Elements,faceID,normalVector):
 def read_NVC_atx(filePath):
     logger.info("Start Importing {0}".format(filePath));
     # Open File
-    file = open(filepath,"r");
+    file = open(filePath,"r");
     file_all_lines = file.readlines();
     file.close();
 
@@ -112,7 +112,7 @@ def read_NVC_atx(filePath):
         ElementID.append(int(tmp[0].strip()));
         FaceID.append(int(tmp[1].strip()));
         tmp_NVC = [];
-        for jj in rnage(3):
+        for jj in range(3):
             tmp_NVC.append(float(tmp[jj+2].strip()));
         NVC.append(tmp_NVC);
 
@@ -120,7 +120,7 @@ def read_NVC_atx(filePath):
     return numNVC, ElementID, FaceID, NVC;
 
 ## Write transientID.atx
-def write_transientID_atx(filePath,NodeID):
+def write_transientID_atx(filePath, NodeID, transientID):
     logger.info("Start Exporting transientID.atx as {0}".format(filePath));
     # Open file
     file = open(filePath,"w");
@@ -133,11 +133,43 @@ def write_transientID_atx(filePath,NodeID):
     file.write("fega_type=NodeVariable\n");
     file.write("format=i4i4f8\n");
     for ii in range(len(NodeID)):
-        file.write("{0} 0 0 0.000000e+00\n".format(NodeID[ii]));
+        file.write("{0} {1} 0 0.000000e+00\n".format(NodeID[ii],transientID[ii]));
 
     # Close file
     file.close();
     logger.info("Finish Exporting {0}".format(filePath));
+
+## Write NormalVector.atx
+def write_normalVector_atx(filePath, NVs, IDs):
+    logger.info("Start Exporting deformed_surface_nv.atx as {0}".format(filePath));
+    # Check Input
+    if (len(NVs) != len(IDs)):
+        logger.error("The input should have same size");
+        sys.exit();
+    if (len(NVs[0][0]) != 3):
+        logger.error("The normal vector should be 3-dimensional data");
+        sys.exit();
+
+    # Open file
+    file = open(filePath,"w");
+
+    # Write deformed surface normal vector data
+    for ii in range(len(NVs)):
+        file.write("###############################################\n");
+        file.write("DeformedSurfaceNormalVector {0}\n".format(len(NVs[ii])));
+        file.write("###############################################\n");
+        file.write("content_type=FEGenericAttribute\n");
+        file.write("fega_type=Void\n");
+        file.write("format=f8f8f8\n");
+        file.write("deformed_surface_id={0}\n".format(IDs[ii]));
+        file.write("\n");
+        for jj in range(len(NVs[ii])):
+            file.write("{0} {1} {2}\n".format(NVs[ii][jj][0],NVs[ii][jj][1],NVs[ii][jj][2]));
+
+    # Close file
+    file.close();
+    logger.info("Finish Exporting {0}".format(filePath));
+
 
 if __name__ == '__main__':
     logger.info('Print info of beads_atx.py ');
@@ -145,3 +177,4 @@ if __name__ == '__main__':
     print('  1. write_DSC_atx');
     print('  2. write_NVC_atx');
     print('  3. write_transientID_atx');
+    print('  4. write_normalVector_atx');

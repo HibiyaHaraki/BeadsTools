@@ -123,6 +123,55 @@ def calculate_gravity_point(Nodes):
     # Output
     return gp;
 
+## Delete node from element
+def delete_nodes_from_elements(delete_nodes,elements):
+    # Check Inputs
+    num_elements = len(elements);
+    num_delete_nodes = len(delete_nodes);
+    max_node_id = max(list(map(lambda x: max(x), elements)));
+    for ii in range(num_delete_nodes):
+        if(delete_nodes[ii] > max_node_id):
+            logger.error("Delete Nodes ID {0} is over max node id {1}".format(delete_nodes[ii],max_node_id));
+    logger.info("Delete {0} nodes from {1} elements".format(num_delete_nodes,num_elements));
+    delete_nodes.sort();
+    
+    # Create map for elements
+    logger.info("Create Element-Node map");
+    element_map = [[] for ii in range(max_node_id+1)];
+    for ii in range(num_elements):
+        for jj in range(len(elements[ii])):
+            element_map[elements[ii][jj]].append([ii,jj]);
+    
+    # Revise node IDs
+    logger.info("Revise node IDs");
+    revise_number = [];
+    for ii in range(max_node_id+1):
+        revise_number.append(0);
+    for ii in range(num_delete_nodes):
+        for jj in range(delete_nodes[ii]):
+            revise_number[jj] += 1;
+    for ii in range(max_node_id+1):
+        for jj in range(len(element_map[ii])):
+            elements[element_map[ii][jj][0]][element_map[ii][jj][1]] -= revise_number[ii];
+
+    # Delete node ID from Elements
+    logger.info("Delete nodes");
+    delete_elements = [];
+    for ii in range(num_delete_nodes):
+        for jj in range(len(element_map[delete_nodes[ii]])):
+            delete_elements.append(element_map[delete_nodes[ii]][jj][0]);
+    delete_elements = list(set(delete_elements));
+    delete_elements.sort(reverse=True);
+    for ii in range(len(delete_elements)):
+        elements.pop(delete_elements[ii]);    
+
+    # Output
+    logger.info("Number of Elements is {0}".format(len(elements)));
+    return elements;
+
+
+
+
 ## Check the functions
 if __name__ == '__main__':
     logger.info('Print info of beads_msh.py ');
@@ -130,3 +179,4 @@ if __name__ == '__main__':
     print('  1. read_msh');
     print('  2. write_msh');
     print('  3. calculate_gravity_point');
+    print('  4. delete_nodes_from_elements');

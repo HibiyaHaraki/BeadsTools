@@ -18,6 +18,16 @@ from . import beads_log
 
 logger = beads_log.root_logger();
 
+## Import Number of Surface from ADVENTURE .fgr file (See ADVENTURE BCtool Document)
+def read_numSurf_from_fgr(filePath):
+    logger.info('Start Importing Surfaces');
+    file = open(filePath,'r');
+    file_all_lines = file.readlines();
+    file.close();
+    NumSurfaces = int(file_all_lines[1].strip());
+    return NumSurfaces
+
+
 ## Import ADVENTURE .fgr file (See ADVENTURE BCtool Document)
 def read_fgr(filePath,surfaceID):
     logger.info('Start Importing Surfaces');
@@ -51,8 +61,8 @@ def read_fgr(filePath,surfaceID):
         # Move to the data
         ii = 0; reading_line = 2;
         while (ii < surfaceID[jj]):
-            NumElements = int(file_all_lines[reading_line].strip());
-            reading_line += NumElements + 1;
+            tmp_NumElements = int(file_all_lines[reading_line].strip());
+            reading_line += tmp_NumElements + 1;
             ii = ii+1;
         logger.info('Import Surface ID is {0}'.format(surfaceID[jj]));
 
