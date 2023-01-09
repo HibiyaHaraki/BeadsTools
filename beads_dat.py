@@ -114,6 +114,22 @@ def compare_dat(InfilePath1, InfilePath2, OutfilePath, method):
     write_dat(OutfilePath,"{0}Error".format(dataLabel1),NewData);
     logger.info('Finish Comparing and export {0}'.format(OutfilePath));
 
+## Judge same dat file or not
+def issamedat(InfilePath1, InfilePath2):
+    # Get Data
+    dataLabel1, NumData1, Data1 = read_dat(InfilePath1);
+    dataLabel2, NumData2, Data2 = read_dat(InfilePath2);
+
+    # Check Data
+    if (NumData1 != NumData2):
+        sys.exit("{0} and {1} should have same size Data!!".format(InfilePath1,InfilePath2));
+    else:
+        for ii in range(NumData1):
+            if (len(Data1[ii]) != len(Data2[ii])):
+                sys.exit("{0} and {1} should have same size Data ({3} Data)!!".format(InfilePath1,InfilePath2),ii);
+
+    # Output
+    return Data1 == Data2
 
 ## Check the functions
 if __name__ == '__main__':
@@ -122,3 +138,4 @@ if __name__ == '__main__':
     print('  1. read_dat');
     print('  2. write_dat');
     print('  3. compare_dat');
+    print('  4. issamedat')

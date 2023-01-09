@@ -44,10 +44,11 @@ def beads_kNN(Points,Nodes,Num):
 
     # NN-calculation
     resultIDs = []; resultDist = [];
+    ids = index.knnQueryBatch(points, k=Num, num_threads=4);
+
     for ii in range(NumPoints):
-        ids, distances = index.knnQuery(points[ii],k=Num);
-        resultIDs.append(ids.tolist());
-        resultDist.append(distances.tolist());
+        resultIDs.append(ids[ii][0]);
+        resultDist.append(ids[ii][1]);
 
     # Output
     return resultIDs, resultDist;

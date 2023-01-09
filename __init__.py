@@ -23,6 +23,7 @@ from BeadsTools.beads_pts   import write_pts as write_pts
 from BeadsTools.beads_dat   import read_dat as read_dat
 from BeadsTools.beads_dat   import write_dat as write_dat
 from BeadsTools.beads_dat   import compare_dat as compare_dat
+from BeadsTools.beads_dat   import issamedat as issamedat
 
 # Import beads_judge.py
 from BeadsTools.beads_judge import judge_nodes as judge_nodes

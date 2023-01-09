@@ -148,7 +148,7 @@ def delete_nodes_from_elements(delete_nodes,elements):
     for ii in range(max_node_id+1):
         revise_number.append(0);
     for ii in range(num_delete_nodes):
-        for jj in range(delete_nodes[ii]):
+        for jj in range(delete_nodes[ii],max_node_id+1):
             revise_number[jj] += 1;
     for ii in range(max_node_id+1):
         for jj in range(len(element_map[ii])):
@@ -168,8 +168,6 @@ def delete_nodes_from_elements(delete_nodes,elements):
     # Output
     logger.info("Number of Elements is {0}".format(len(elements)));
     return elements;
-
-
 
 
 ## Check the functions
